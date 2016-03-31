@@ -12,18 +12,23 @@ var argv = require('yargs')
   .argv;
 
 if (typeof argv.l === 'string' && argv.l.length > 0) {
-  weather(argv.l, function (currentWeather) {
-    console.log(currentWeather);
-  })
+  weather(argv.l)
+    .then(function(currentWeather){
+      console.log(currentWeather);
+    })
+    .catch(function(error){
+      console.log(error);
+    })
 } else {
-  console.log('no loaction given');
-  location(function(location){
-    if (location) {
-      weather(location.city, function(currentWeather){
-        console.log(currentWeather);
-      })
-    } else {
-      console.log('Unable to guest location');
-    }
-  })
+  console.log('location was not provided');
+  location()
+    .then(function(loc){
+      return weather(loc.city)
+    })
+    .then(function(currentWeather){
+      console.log(currentWeather);
+    })
+    .catch(function(error){
+      console.log(error);
+    })
 }
